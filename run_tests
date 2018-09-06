@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mkdir -p bin
+ponyc test -b bin/test --debug \
+  && ./bin/test
