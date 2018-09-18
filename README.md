@@ -48,36 +48,41 @@ $ stable fetch
 
 ## API
 
-### `Functor a`
+---
 
-#### `map : (a -> b) -> Functor b`
+### Typeclasses
+
+#### `Functor a`
+
+##### `map : (a -> b) -> Functor b`
 
 Also known as `fmap`.
 
-### `Monad a`
+#### `Monad a`
 
 `Monad` is a subclass of `Functor`.
 
-#### `chain : (a -> Monad b) -> Monad b`
+##### `chain : (a -> Monad b) -> Monad b`
 
 Also known as `bind`, `flatMap`, `>>=`.
 
-### `Foldable a`
+#### `Foldable a`
 
-#### `fold : (b -> a -> b) -> b -> b`
+##### `fold : (b -> a -> b) -> b -> b`
 
 Also known as `foldl`, `foldLeft`, `reduce`.
 
-### `Bifunctor a b`
+#### `Bifunctor a b`
 
 `Bifunctor` is a subclass of `Functor`.
 
-#### `bimap : (a -> c) -> (b -> d) -> Bifunctor c d`
+##### `bimap : (a -> c) -> (b -> d) -> Bifunctor c d`
 
 ---
----
 
-### `Identity a`
+### Data types
+
+#### `Identity a`
 
 ```pony
 Identity[A](a)
@@ -86,11 +91,11 @@ Identity[A](a)
 Identity monad.
 Implements `Monad`, `Foldable`.
 
-#### `identity : () -> a`
+##### `identity : () -> a`
 
 Unpacks value.
 
-### `Maybe a`
+#### `Maybe a`
 
 ```pony
 Just[A](a)
@@ -99,15 +104,15 @@ Nothing[A]
 
 Implements `Monad`, `Foldable`.
 
-See also on [`hackage`](https://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Maybe.html).
+See also on [hackage](https://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Maybe.html).
 
-#### `maybe : b -> (a -> b) -> b`
+##### `maybe : b -> (a -> b) -> b`
 
-#### `isJust : () -> Bool`
+##### `isJust : () -> Bool`
 
-#### `isNothing : () -> Bool`
+##### `isNothing : () -> Bool`
 
-### `Either a b`
+#### `Either a b`
 
 ```pony
 Left[A, B](a)
@@ -116,24 +121,25 @@ Right[A, B](b)
 
 Implements `Bifunctor`, `Monad`, `Foldable`.
 
-See also on [`hackage`](https://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Either.html).
+See also on [hackage](https://hackage.haskell.org/package/base-4.11.1.0/docs/Data-Either.html).
 
-#### `either : (a -> c) -> (b -> c) -> c`
+##### `either : (a -> c) -> (b -> c) -> c`
 
-#### `mapL : (a -> c) -> Either c b`
+##### `mapL : (a -> c) -> Either c b`
 
-#### `isLeft : () -> Bool`
+##### `isLeft : () -> Bool`
 
-#### `isRight : () -> Bool`
+##### `isRight : () -> Bool`
 
 ---
----
 
-### `primitive MaybeHelpers`
+### Other
+
+#### `primitive MaybeHelpers`
 
 Function list:
 
-- `fromNullable[T]`
+- `fromNullable[T]` - takes `(T | None)` and returns `Maybe[T]`
 - `try1[A, R]`
 - `try2[A, B, R]`
 - `try3[A, B, C, R]`
