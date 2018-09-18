@@ -4,9 +4,12 @@ trait val Either[L: Any val, R: Any val] is (Bifunctor[L, R] & Monad[R] & Foldab
   fun map[TT: Any val](fn: { (R): TT } box): Either[L, TT]^
   fun chain[TT: Any val](fn: { (R): Either[L, TT] }): Either[L, TT]
   fun fold[B](fn: { (B, R): B } box, acc: B): B
-  fun bimap[LL: Any val, RR: Any val](fn1: { (L): LL } box, fn2: { (R): RR } box): Bifunctor[LL, RR]^
+  fun bimap[LL: Any val, RR: Any val](
+    fn1: { (L): LL } box,
+    fn2: { (R): RR } box
+  ): Bifunctor[LL, RR]^
   fun mapL[LL: Any val](fn: { (L): LL } box): Either[LL, R]^
-  fun either[C](fn1: { (L): C }, fn2: { (R): C }): C
+  fun either[C](fn1: { (L): C } box, fn2: { (R): C } box): C
   fun isLeft(): Bool
   fun isRight(): Bool
 
@@ -24,13 +27,16 @@ class val Left[L: Any val, R: Any val] is Either[L, R]
   fun fold[B](fn: { (B, R): B } box, acc: B): B =>
     consume acc
 
-  fun bimap[LL: Any val, RR: Any val](fn1: { (L): LL } box, fn2: { (R): RR } box): Bifunctor[LL, RR]^ =>
+  fun bimap[LL: Any val, RR: Any val](
+    fn1: { (L): LL } box,
+    fn2: { (R): RR } box
+  ): Bifunctor[LL, RR]^ =>
     Left[LL, RR](fn1(_v))
 
   fun mapL[LL: Any val](fn: { (L): LL } box): Either[LL, R]^ =>
     Left[LL, R](fn(_v))
 
-  fun either[C](fn1: { (L): C }, fn2: { (R): C }): C =>
+  fun either[C](fn1: { (L): C } box, fn2: { (R): C } box): C =>
     fn1(_v)
 
   fun isLeft(): Bool => true
@@ -50,13 +56,16 @@ class val Right[L: Any val, R: Any val] is Either[L, R]
   fun fold[B](fn: { (B, R): B } box, acc: B): B =>
     fn(consume acc, _v)
 
-  fun bimap[LL: Any val, RR: Any val](fn1: { (L): LL } box, fn2: { (R): RR } box): Bifunctor[LL, RR]^ =>
+  fun bimap[LL: Any val, RR: Any val](
+    fn1: { (L): LL } box,
+    fn2: { (R): RR } box
+  ): Bifunctor[LL, RR]^ =>
     Right[LL, RR](fn2(_v))
 
   fun mapL[LL: Any val](fn: { (L): LL } box): Either[LL, R]^ =>
     Right[LL, R](_v)
 
-  fun either[C](fn1: { (L): C }, fn2: { (R): C }): C =>
+  fun either[C](fn1: { (L): C } box, fn2: { (R): C } box): C =>
     fn2(_v)
 
   fun isLeft(): Bool => false
