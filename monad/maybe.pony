@@ -4,7 +4,7 @@ trait val Maybe[T: Any val] is (Monad[T] & Foldable[T])
   fun map[TT: Any val](fn: { (T): TT } box): Maybe[TT]^
   fun chain[TT: Any val](fn: { (T): Maybe[TT] }): Maybe[TT]
   fun fold[B](fn: { (B, T): B } box, acc: B): B
-  fun maybe[B](b: B, fn: { (T): B }): B
+  fun maybe[B](b: B, fn: { (T): B } box): B
   fun isJust(): Bool
   fun isNothing(): Bool
 
@@ -22,7 +22,7 @@ class val Just[T: Any val] is Maybe[T]
   fun fold[B](fn: { (B, T): B } box, acc: B): B =>
     fn(consume acc, _v)
 
-  fun maybe[B](b: B, fn: { (T): B }): B =>
+  fun maybe[B](b: B, fn: { (T): B } box): B =>
     fn(_v)
 
   fun isJust(): Bool => true
@@ -40,8 +40,8 @@ class val Nothing[T: Any val] is Maybe[T]
   fun fold[B](fn: { (B, T): B } box, acc: B): B =>
     consume acc
 
-  fun maybe[B](b: B, fn: { (T): B }): B =>
-    b
+  fun maybe[B](b: B, fn: { (T): B } box): B =>
+    consume b
 
   fun isJust(): Bool => false
   fun isNothing(): Bool => true
