@@ -2,7 +2,7 @@
 
 trait val Either[L: Any val, R: Any val] is (Bifunctor[L, R] & Monad[R] & Foldable[R])
   fun map[TT: Any val](fn: { (R): TT } box): Either[L, TT]^
-  fun chain[TT: Any val](fn: { (R): Either[L, TT] }): Either[L, TT]
+  fun flat_map[TT: Any val](fn: { (R): Either[L, TT] }): Either[L, TT]
   fun fold[B](fn: { (B, R): B } box, acc: B): B
   fun bimap[LL: Any val, RR: Any val](
     fn1: { (L): LL } box,
@@ -21,7 +21,7 @@ class val Left[L: Any val, R: Any val] is Either[L, R]
   fun map[TT: Any val](fn: { (R): TT } box): Either[L, TT]^ =>
     Left[L, TT](_v)
 
-  fun chain[TT: Any val](fn: { (R): Either[L, TT] }): Either[L, TT] =>
+  fun flat_map[TT: Any val](fn: { (R): Either[L, TT] }): Either[L, TT] =>
     Left[L, TT](_v)
 
   fun fold[B](fn: { (B, R): B } box, acc: B): B =>
@@ -50,7 +50,7 @@ class val Right[L: Any val, R: Any val] is Either[L, R]
   fun map[TT: Any val](fn: { (R): TT } box): Either[L, TT]^ =>
     Right[L, TT](fn(_v))
 
-  fun chain[TT: Any val](fn: { (R): Either[L, TT] }): Either[L, TT] =>
+  fun flat_map[TT: Any val](fn: { (R): Either[L, TT] }): Either[L, TT] =>
     fn(_v)
 
   fun fold[B](fn: { (B, R): B } box, acc: B): B =>

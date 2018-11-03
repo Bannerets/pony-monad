@@ -13,14 +13,14 @@ actor Main
     // Identity[T]
     let v = Identity[U32](2)
       .map[String]({ (n) => "n: " + n.string() })
-      .chain[String]({ (str) => Identity[String](str + "!") })
+      .flat_map[String]({ (str) => Identity[String](str + "!") })
       .identity()
 
     Debug(v) // => "n: 2!"
 
     // Maybe[T]
     let vv = Just[String]("Hello")
-      .chain[String]({ (str) => Nothing[String] })
+      .flat_map[String]({ (str) => Nothing[String] })
       .map[String]({ (str) => str + ", world!" })
       .maybe[String]("Nothing!", { (x) => x })
 
@@ -29,7 +29,7 @@ actor Main
     // Either[L, R]
     let vvv = Right[String, U32](5)
       .map[U32]({ (n) => n + 8 })
-      .chain[U32]({ (n) => Left[String, U32](
+      .flat_map[U32]({ (n) => Left[String, U32](
         "Oops! Error. n: " + n.string()) })
       .mapL[String]({ (str) => str + "!" })
       .either[String]({ (x) => "Left: " + x }, { (y) => "Right: " + y.string() })
@@ -50,7 +50,7 @@ $ stable fetch
 
 ---
 
-### Typeclasses
+### Algebraic structures
 
 #### `Functor a`
 
@@ -62,9 +62,9 @@ Also known as `fmap`.
 
 `Monad` is a subclass of `Functor`.
 
-##### `chain : (a -> Monad b) -> Monad b`
+##### `flat_map : (a -> Monad b) -> Monad b`
 
-Also known as `bind`, `flatMap`, `>>=`.
+Also known as `bind`, `chain`, `>>=`.
 
 #### `Foldable a`
 
@@ -140,6 +140,10 @@ See also on [hackage](https://hackage.haskell.org/package/base-4.11.1.0/docs/Dat
 Function list:
 
 - `fromNullable[T]` - takes `(T | None)` and returns `Maybe[T]`
+- `try0[R](fn: { (): R ? }): Maybe[R]`
+
+<!--
 - `try1[A, R]`
 - `try2[A, B, R]`
 - `try3[A, B, C, R]`
+-->

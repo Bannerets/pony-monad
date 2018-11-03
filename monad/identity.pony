@@ -8,7 +8,7 @@ class val Identity[T: Any val] is (Monad[T] & Foldable[T])
   fun map[TT: Any val](fn: { (T): TT } box): Identity[TT]^ =>
     Identity[TT](fn(_v))
 
-  fun chain[TT: Any val](fn: { (T): Identity[TT] }): Identity[TT] =>
+  fun flat_map[TT: Any val](fn: { (T): Identity[TT] }): Identity[TT] =>
     fn(_v)
 
   fun fold[B](fn: { (B, T): B } box, acc: B): B =>

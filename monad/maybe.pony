@@ -2,7 +2,7 @@
 
 trait val Maybe[T: Any val] is (Monad[T] & Foldable[T])
   fun map[TT: Any val](fn: { (T): TT } box): Maybe[TT]^
-  fun chain[TT: Any val](fn: { (T): Maybe[TT] }): Maybe[TT]
+  fun flat_map[TT: Any val](fn: { (T): Maybe[TT] }): Maybe[TT]
   fun fold[B](fn: { (B, T): B } box, acc: B): B
   fun maybe[B](b: B, fn: { (T): B } box): B
   fun isJust(): Bool
@@ -16,7 +16,7 @@ class val Just[T: Any val] is Maybe[T]
   fun map[TT: Any val](fn: { (T): TT } box): Maybe[TT]^ =>
     Just[TT](fn(_v))
 
-  fun chain[TT: Any val](fn: { (T): Maybe[TT] }): Maybe[TT] =>
+  fun flat_map[TT: Any val](fn: { (T): Maybe[TT] }): Maybe[TT] =>
     fn(_v)
 
   fun fold[B](fn: { (B, T): B } box, acc: B): B =>
@@ -34,7 +34,7 @@ class val Nothing[T: Any val] is Maybe[T]
   fun map[TT: Any val](fn: { (T): TT } box): Maybe[TT]^ =>
     Nothing[TT]
 
-  fun chain[TT: Any val](fn: { (T): Maybe[TT] }): Maybe[TT] =>
+  fun flat_map[TT: Any val](fn: { (T): Maybe[TT] }): Maybe[TT] =>
     Nothing[TT]
 
   fun fold[B](fn: { (B, T): B } box, acc: B): B =>
@@ -52,6 +52,9 @@ primitive MaybeHelpers
     | None => Nothing[T]
     | let v: T => Just[T](v)
     end
+
+  fun try0[R: Any val](fn: { (): R ? }): Maybe[R] =>
+    try Just[R](fn()?) else Nothing[R] end
 
   fun try1[A, R: Any val](fn: { (A): R ? }, a: A): Maybe[R] =>
     try Just[R](fn(consume a)?) else Nothing[R] end

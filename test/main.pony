@@ -18,7 +18,7 @@ class iso _Identity is UnitTest
   fun apply(h: TestHelper) =>
     let v = Identity[U32](2)
       .map[String]({ (n) => "n: " + n.string() })
-      .chain[String]({ (str) => Identity[String](str + "!") })
+      .flat_map[String]({ (str) => Identity[String](str + "!") })
       .identity()
 
     h.assert_eq[String](v, "n: 2!")
@@ -29,7 +29,7 @@ class iso _Maybe is UnitTest
   fun apply(h: TestHelper) =>
 
     let vv = Just[String]("Hello")
-      .chain[String]({ (str) => Nothing[String] })
+      .flat_map[String]({ (str) => Nothing[String] })
       .map[String]({ (str) => str + ", world!" })
       .maybe[String]("Nothing!", { (x) => x })
 
@@ -54,6 +54,15 @@ class iso _Maybe is UnitTest
     )
 
     h.assert_eq[String](
+      MaybeHelpers.try0[String]({ ()? => error })
+        .maybe[String]("err", { (x) => x }),
+      "err")
+    h.assert_eq[String](
+      MaybeHelpers.try0[String]({ () => "a" })
+        .maybe[String]("err", { (x) => x }),
+      "a")
+
+    h.assert_eq[String](
       MaybeHelpers.try1[I32, String]({ (n)? => error }, 5)
         .maybe[String]("err", { (x) => x }),
       "err")
@@ -70,7 +79,7 @@ class iso _Either is UnitTest
 
     let vvv = Right[String, U32](5)
       .map[U32]({ (n) => n + 8 })
-      .chain[U32]({ (n) => Left[String, U32](
+      .flat_map[U32]({ (n) => Left[String, U32](
         "Oops! Error. n: " + n.string()) })
       .mapL[String]({ (str) => str + "!" })
       .either[String]({ (x) => "Left: " + x }, { (y) => "Right: " + y.string() })
@@ -84,14 +93,14 @@ class iso _FromReadme is UnitTest
     // Identity[T]
     let v = Identity[U32](2)
       .map[String]({ (n) => "n: " + n.string() })
-      .chain[String]({ (str) => Identity[String](str + "!") })
+      .flat_map[String]({ (str) => Identity[String](str + "!") })
       .identity()
 
     // Debug(v) // => "n: 2!"
 
     // Maybe[T]
     let vv = Just[String]("Hello")
-      .chain[String]({ (str) => Nothing[String] })
+      .flat_map[String]({ (str) => Nothing[String] })
       .map[String]({ (str) => str + ", world!" })
       .maybe[String]("Nothing!", { (x) => x })
 
@@ -100,7 +109,7 @@ class iso _FromReadme is UnitTest
     // Either[L, R]
     let vvv = Right[String, U32](5)
       .map[U32]({ (n) => n + 8 })
-      .chain[U32]({ (n) => Left[String, U32](
+      .flat_map[U32]({ (n) => Left[String, U32](
         "Oops! Error. n: " + n.string()) })
       .mapL[String]({ (str) => str + "!" })
       .either[String]({ (x) => "Left: " + x }, { (y) => "Right: " + y.string() })

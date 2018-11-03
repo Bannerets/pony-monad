@@ -9,7 +9,7 @@ trait val Applicative[T: Any val] is Functor[T]
 
 trait val Monad[T: Any val] is Applicative[T]
   // new val of(v: T)
-  // fun chain[TT: Any val](fn: { (T): Monad[TT] }): Monad[TT]
+  // fun flat_map[TT: Any val](fn: { (T): Monad[TT] }): Monad[TT]
 
 trait val Foldable[T: Any val]
   fun fold[B](fn: { (B, T): B^ } box, acc: B): B
